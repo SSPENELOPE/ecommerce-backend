@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const { json } = require('sequelize');
+/* const { Cast } = require('sequelize/types/utils'); */
 const { Category, Product } = require('../../models');
 
 // The `/api/categories` endpoint
@@ -7,10 +8,11 @@ const { Category, Product } = require('../../models');
 router.get('/', async (req, res) => {
   // find all categories
   try {
-    const categoryData = await Category.findAll(req.params, {
-      // be sure to include its associated Products
+    const categoryData = await Category.findAll({
       include: [{ model: Product}]
-    });
+    })
+      // be sure to include its associated Products
+
     res.status(200).json(categoryData)
   } catch (err) {
     res.status(500).json(err)
@@ -46,19 +48,20 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
   // update a category by its `id` value
-  try {
-    const categoryData = await Category.update({
+  Category.update(
+    {
+      category_name: req.body.category_name,
+    },
+    {
       where: {
-        id: req.params.id
-      }
-    })
-    if (!categoryData) {
-      res.status(404).json({ message: 'No Category with this id found!' })
+        id: req.params.id,
+      },
     }
-    res.status(200).json(categoryData)
-  } catch (err) {
-    res.status(500).json(err);
-  }
+  )
+  .then((updatedCategory) => {
+    res.json(updatedCategory);
+  })
+  .catch((err) => res.json(err));
 });
 
 router.delete('/:id', async (req, res) => {
