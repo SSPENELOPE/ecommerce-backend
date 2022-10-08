@@ -19,7 +19,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   // find a single tag by its `id`
   try {
-    const tagData = await Tag.findByPk()
+    const tagData = await Tag.findByPk();
     
    res.status(200).json(tagData)
   } catch (err) {
