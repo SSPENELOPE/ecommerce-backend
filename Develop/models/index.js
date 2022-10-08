@@ -20,12 +20,16 @@ Product.belongsToMany(Tag, {
   through: 'ProductTag',
   foreignKey: 'product_id',
 })
+Product.sync();
+
 
 // Tags belongToMany Products (through ProductTag)
 Tag.belongsToMany(Product, {
   through: 'ProductTag',
   foreignKey: 'tag_id',
 });
+Tag.sync();
+
 
 // Export the models
 module.exports = {
