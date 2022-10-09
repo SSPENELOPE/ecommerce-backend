@@ -10,7 +10,7 @@ router.get('/', async (req, res) => {
       // be sure to include its associated Product data
       include: [{ model: Product }]
     })
-   res.status(200).json(tagData)
+    res.status(200).json(tagData)
   } catch (err) {
     res.status(500).json(err)
   }
@@ -19,9 +19,14 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   // find a single tag by its `id`
   try {
-    const tagData = await Tag.findByPk();
-    
-   res.status(200).json(tagData)
+    const tagData = await Tag.findOne({
+      where: {
+        id: req.params.id,
+      },
+      include: [{ model: Product, through: ProductTag }],
+    });
+
+    res.status(200).json(tagData)
   } catch (err) {
     res.status(500).json(err)
   }
@@ -49,10 +54,10 @@ router.put('/:id', (req, res) => {
       },
     }
   )
-  .then((updatedTag) => {
-    res.json(updatedTag)
-  })
-  .catch((err) => res.json(err));
+    .then((updatedTag) => {
+      res.json(updatedTag)
+    })
+    .catch((err) => res.json(err));
 });
 
 router.delete('/:id', async (req, res) => {
